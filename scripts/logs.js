@@ -33,6 +33,7 @@ const refresh =async()=>{
     const name=document.getElementById("name");
     const email=document.getElementById("email");
     const list=document.getElementById("list");
+    list.innerHTML+="<p style='color:blue'>refreshing commits...</p>";
     var resp = await fetch('/logs',
     {
         method:'post',
@@ -56,8 +57,7 @@ const refresh =async()=>{
         }
         s+="</ul>";
         list.innerHTML=s;
-    }
-    
+    }  
     })
    .catch(()=>{console.log('fail')})
 }
