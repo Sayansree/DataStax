@@ -13,22 +13,35 @@ async function print() {
     console.log(`Your cluster returned ${rs.rowLength} row(s)`);
     console.log(rs.rows);
 }
+const ONE_DAY= 86400000;
 //converts date to column name
-const toCol = (date) => {s=date.toISOString(); s='t'+s.substr(0,4)+s.substr(5,2)+s.substr(8,2); return s;}
+const toCol = (date) => {
+    s=date.toISOString(); 
+    s='t'+s.substr(0,4)+s.substr(5,2)+s.substr(8,2); 
+    return s;
+};
+const updateCol = async () => { 
+    let tommrow =new Date(); 
+    tommrow.setDate(tommrow.getDate()+1);
+    await addColumn(toCol(today)); 
+};
 //
-//root functions
+
 const setup       = async () => { 
     await client.connect(); 
     await client.execute(`USE ${process.env.keyspace};`);
     await createTable();
     let today =new Date();
-    await addColumn();
+    await addColumn(toCol(today));
+    setInterval(updateCol, ONE_DAY);
 };
+//root functions
 const stop        = async () =>   await client.shutdown();
 const createTable = async () =>   await client.execute(`CREATE TABLE IF NOT EXISTS ${process.env.table} (email TEXT PRIMARY KEY, name TEXT, password_hash TEXT, cookie_hash TEXT);`);
 const dropTable   = async () =>   await client.execute(`DROP TABLE IF EXISTS ${process.env.table}`);
 const reset       = async () => { await dropTable(); await createTable();}
 
+//data manupulation
 const addColumn =   async (col) => await client.execute(`ALTER TABLE ${process.env.table} ADD ${col} INT`);
 const addUser   =   async (name,email,hash)    => await client.execute(`INSERT INTO ${process.env.table} (name,email,cookie_hash) VALUES ('${name}','${email}','${hash}');`);
 const getCommits =  async (cookie_hash)  =>{
