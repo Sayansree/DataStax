@@ -48,6 +48,14 @@ const reset       = async () => { await dropTable(); await createTable();}
 const addColumn =   async (col) => await client.execute(`ALTER TABLE ${process.env.table} ADD ${col} INT`).catch((err)=>console.log(`ignoring ${col} column already exists`));
 const addUser   =   async (name,email,password_hash)    => await client.execute(`INSERT INTO ${process.env.table} (name,email,password_hash) VALUES ('${name}','${email}','${password_hash}');`);
 const addcookie =   async (email,cookie_hash) => await client.execute(`UPDATE ${process.env.table} SET cookie_hash = '${cookie_hash}' WHERE EMAIL = '${email}'`)
+const commit =   async (cookie_hash,col) => {
+    let rs = await client.execute(`SELECT ${col},email FROM ${process.env.table} WHERE cookie_hash = '${cookie_hash}' ALLOW FILTERING;`);
+    let v=rs.rows[0][col];
+    console.log(rs)
+    if(v==null) v=1;
+    else v++;
+    await client.execute(`UPDATE ${process.env.table} SET ${col} = ${v} WHERE email = '${rs.rows[0].email}'`);
+};
 const getLogs =  async (cookie_hash)  =>{
     return myPromise = new Promise(async(success, fail) =>{
         let rs = await client.execute(`SELECT * FROM ${process.env.table} WHERE cookie_hash = '${cookie_hash}' ALLOW FILTERING;`);
@@ -86,6 +94,7 @@ const getLogs =  async (cookie_hash)  =>{
       await auth('a@b.com','aasdf').then(()=>console.log("success")).catch((a)=>console.log('error:',a))
       await auth('a@ab.com','asdf').then(()=>console.log("success")).catch((a)=>console.log('error:',a))
       await addcookie('a@b.com','qwerty')
+      await commit('qwerty',toCol(new Date()))
       stop();
 
   }
