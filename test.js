@@ -45,7 +45,18 @@ app.use(express.static('public'));
   });
   app.post('/signup',(request,response)=> { 
     if(Object.keys(request.cookies).length===0){
-        addUser(request.body.name,request.body.email,request.body.password).then((stat) =>{
+        addUser(request.body.name,request.body.email,request.body.password).then(() =>{
+        response.send(1);
+        console.log(Date(),'manual login successful' ,request.ip );
+    }).catch((stat)=>{
+        response.send(stat);
+        console.log(Date(),'manual login failed',request.ip);
+      })
+    }
+  });
+  app.post('/commit',(request,response)=> { 
+    if(Object.keys(request.cookies).length!=0){
+        commit(request.cookies.auth,toCol(new Date())).then(() =>{
         response.send(1);
         console.log(Date(),'manual login successful' ,request.ip );
     }).catch((stat)=>{
