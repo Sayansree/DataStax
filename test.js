@@ -28,24 +28,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(upload.array()); 
 app.use(express.static('public'));
-
-
-  app.get('/auth',(request, response)=>{
-    if(Object.keys(request.cookies).length===0)
-      response.sendFile(path.join( __dirname + '/html/login.html'));
-    else if(request.cookies.auth===hashCookie){
-      response.redirect("/secret");
-      console.log(Date(),'cookie login' ,request.ip );
-    }else{
-      response.cookie('auth',null,{maxAge:0});
-      response.sendFile(path.join( __dirname + '/html/login.html'));
-    }
-  });
   
   app.post('/login',(request,response)=> { 
     if(Object.keys(request.cookies).length===0){
         auth(request.body.email,request.body.password).then((stat) =>{
             let hashCookie="cnewciwecfweibi" //////to do generate random hash cookie
+        addcookie(request.body.email,hashCookie);
         response.cookie('auth',hashCookie,{maxAge:cookieTimeout*60000});
         response.send(stat);
         console.log(Date(),'manual login successful' ,request.ip );
@@ -53,23 +41,14 @@ app.use(express.static('public'));
         response.send(stat);
         console.log(Date(),'manual login failed',request.ip);
       })
-    }else if(request.cookies.auth===hashCookie){
-      response.redirect("/secret");
-      console.log(Date(),'cookie login' ,request.ip );
     }
   });
     
   app.post('/logout',(request,response)=> {
       response.cookie('auth',null,{maxAge:0});
-      response.redirect("/auth");
+      response.send(1);
       console.log(Date(), 'logout', request.ip);
     });
-  
-  app.get('/logout',(request,response)=> {
-    response.cookie('auth',null,{maxAge:0});
-    response.redirect("/auth");
-    console.log(Date(), 'logout', request.ip);
-  });
 
 
   app.listen(appPort,()=>{
