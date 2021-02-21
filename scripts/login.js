@@ -1,9 +1,11 @@
-async function sub(){
+
+const login=document.getElementById("login");
+login.onclick = () => {
     const email=document.getElementById("email").value;
     const pass=document.getElementById("pass").value;
     const msg=document.getElementById("msg");
     msg.innerHTML= "loading...";
-    var resp = await fetch('/login',
+    fetch('/login',
     {
         method:'post',
         mode:'cors',
@@ -13,6 +15,12 @@ async function sub(){
     }
     ).then((resp)=>{return resp.json();} )
     .then((resp)=>{console.log(resp);
-        msg.innerHTML= (!resp.pass)?((!resp.email)?"account not registered with the current email":"incorrect password"):"login successful";})
-   .catch((err)=>{console.log('fail',resp)})
+            if(resp.pass){
+                msg.innerHTML = "login successful";
+                setTimeout(()=>window.open("/","_self"),2000);
+            }else{
+                msg.innerHTML = (resp.email)?"incorrect password":"account not registered with the current email";
+            }
+        })
+    .catch(()=>{console.log('connection error')})
 }

@@ -39,38 +39,35 @@ app.get('/signup/script',(request, response)=>{
 app.get('/auth',(request, response)=>{
   if(Object.keys(request.cookies).length===0)
     response.sendFile(path.join( __dirname + '/html/login.html'));
-  else if(request.cookies.auth===hashCookie){
-     response.redirect("/");
-    console.log(Date(),'cookie login' ,request.ip );
-  }else{
-    response.cookie('auth',null,{maxAge:0});
-    response.sendFile(path.join( __dirname + '/html/login.html'));
+  else{
+    checkCookies(request.cookies.auth)
+    .then(() => {response.sendFile(path.join( __dirname + '/html/index.html')); console.log(Date(),'cookie login' ,request.ip );})
+    .catch(() => {response.cookie('auth',null,{maxAge:0});response.redirect("/auth");})
   }
 
 });
 app.get('/',(request, response)=>{
   if(Object.keys(request.cookies).length===0)
-    response.sendFile(path.join( __dirname + '/index.html'));
-  else if(request.cookies.auth===hashCookie){
-     response.redirect("/");
-    console.log(Date(),'cookie login' ,request.ip );
-  }else{
-    response.cookie('auth',null,{maxAge:0});
-    response.sendFile(path.join( __dirname + 'index.html'));
+  response.redirect("/auth");
+  else{
+    checkCookies(request.cookies.auth)
+    .then(() => {response.sendFile(path.join( __dirname + '/html/index.html')); console.log(Date(),'cookie login' ,request.ip );})
+    .catch(() => {response.cookie('auth',null,{maxAge:0});response.redirect("/auth");})
   }
-
 });
+
   app.post('/login',(request,response)=> { 
     if(Object.keys(request.cookies).length===0){
+      console.log(request.body.email,request.body.password)
         auth(request.body.email,request.body.password).then((stat) =>{
-            let hashCookie=SHA512(`${request.body.email}${(new Date()).toUTCString()}`).toString()
-        addcookie(request.body.email,hashCookie);
-        response.cookie('auth',hashCookie,{maxAge:cookieTimeout*60000});
-        response.send(stat);
-        console.log(Date(),'manual login successful' ,request.ip );
-    }).catch((stat)=>{
-        response.send(stat);
-        console.log(Date(),'manual login failed',request.ip);
+          let hashCookie=SHA512(`${request.body.email}${(new Date()).toUTCString()}`).toString()
+          addcookie(request.body.email,hashCookie);
+          response.cookie('auth',hashCookie,{maxAge:cookieTimeout*60000});
+          response.send(stat);
+          console.log(Date(),'manual login successful' ,request.ip );
+        }).catch((stat)=>{
+          response.send(stat);
+          console.log(Date(),'manual login failed',request.ip);
       })
     }
   });
