@@ -69,10 +69,10 @@ app.get('/auth',(request, response)=>{
   app.post('/commit',(request,response)=> { 
     if(Object.keys(request.cookies).length!=0){
         commit(request.cookies.auth,toCol(new Date())).then(() =>{
-        response.send();
+        response.send("committed");
         console.log(Date(),'commit successful' ,request.ip );
     }).catch((stat)=>{
-        response.send(stat);
+        response.send("sorry couldn't commit");
         console.log(Date(),'commit failed',request.ip);
       })
     }
@@ -173,7 +173,7 @@ const getLogs =  async (cookie_hash)  =>{
 
 
   async function test() {
-      await setup();
+      //await setup();
       //await print();
      // await reset();
      // await print();
@@ -189,4 +189,5 @@ const getLogs =  async (cookie_hash)  =>{
       //stop();
 
   }
-setup()
+setup();
+test();
