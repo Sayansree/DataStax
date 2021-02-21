@@ -7,20 +7,20 @@ const client = new Client({
     cloud: { secureConnectBundle: __dirname+ `/secure/secure-connect-${process.env.db}.zip` },
     credentials: { username: `${process.env.username}`, password: `${process.env.password}` }
   });
-async function setup() {
-    await client.connect();
-    await client.execute(`USE ${process.env.keyspace};`);
-}
+
 async function print() {
     const rs = await client.execute(`SELECT * FROM ${process.env.table};`);
     console.log(`Your cluster returned ${rs.rowLength} row(s)`);
     console.log(rs.rows);
 }
-const stop =        async () => await client.shutdown();
-const createTable = async ()    => await client.execute(`CREATE TABLE IF NOT EXISTS ${process.env.table} (email TEXT PRIMARY KEY, name TEXT, password_hash TEXT, cookie_hash TEXT);`);
+
+const setup = async () => {await client.connect(); await client.execute(`USE ${process.env.keyspace};`);};
+const stop        = async ()  => await client.shutdown();
+const createTable = async ()  => await client.execute(`CREATE TABLE IF NOT EXISTS ${process.env.table} (email TEXT PRIMARY KEY, name TEXT, password_hash TEXT, cookie_hash TEXT);`);
+const dropTable   = async ()  => await client.execute(`DROP TABLE IF EXISTS ${process.env.table}`);
+const reset       = async ()  => { await dropTable(); await createTable();}
+
 const addColumn =   async (col) => await client.execute(`ALTER TABLE ${process.env.table} ADD t${col} INT`);
-const dropTable =   async ()    => await client.execute(`DROP TABLE IF EXISTS ${process.env.table}`);
-const reset     =   async ()    => { dropTable(); createTable();}
 const addUser   =   async (name,email,hash)    => await client.execute(`INSERT INTO ${process.env.table} (name,email,cookie_hash) VALUES ('${name}','${email}','${hash}');`);
 const getCommits =  async (cookie_hash)  =>{
     return myPromise = new Promise(async(success, fail) =>{
