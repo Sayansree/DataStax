@@ -14,15 +14,16 @@ async function print() {
     console.log(rs.rows);
 }
 const ONE_DAY= 86400000;
+
 //converts date to column name
 const toCol = (date) => {
-    s=date.toISOString(); 
-    s='t'+s.substr(0,4)+s.substr(5,2)+s.substr(8,2); 
+    s= `t${date.getUTCFullYear()}${date.getUTCMonth()}${date.getUTCDate()}`; 
     return s;
 };
+//adds a new day column before each day starts
 const updateCol = async () => { 
     let tomorrow =new Date(); 
-    tomorrow.setDate(tommrow.getDate()+1);
+    tomorrow.setDate(tomorrow.getDate()+1);
     await addColumn(toCol(tomorrow)); 
 };
 //
@@ -44,9 +45,20 @@ const dropTable   = async () =>   await client.execute(`DROP TABLE IF EXISTS ${p
 const reset       = async () => { await dropTable(); await createTable();}
 
 //data manupulation
-const addColumn =   async (col) => await client.execute(`ALTER TABLE ${process.env.table} ADD ${col} INT`);
-const addUser   =   async (name,email,hash)    => await client.execute(`INSERT INTO ${process.env.table} (name,email,cookie_hash) VALUES ('${name}','${email}','${hash}');`);
-const getCommits =  async (cookie_hash)  =>{
+const addColumn =   async (col) => await client.execute(`ALTER TABLE ${process.env.table} ADD ${col} INT`).catch((err)=>console.log(`ignoring ${col} column already exists`));
+const addUser   =   async (name,email,password_hash)    => await client.execute(`INSERT INTO ${process.env.table} (name,email,password_hash) VALUES ('${name}','${email}','${password_hash}');`);
+const getLogs =  async (cookie_hash)  =>{
+    return myPromise = new Promise(async(success, fail) =>{
+        let rs = await client.execute(`SELECT * FROM ${process.env.table} WHERE cookie_hash = '${cookie_hash}' ALLOW FILTERING;`);
+        if(rs.rowLength==1){
+            row=rs.rows[0];
+            delete row.cookie_hash;
+            delete row.password_hash;
+            success({'pass': true , 'data' : row});
+        }else
+            fail({'pass' : false});
+  })};
+  const auth =  async (email,password_hash)  =>{
     return myPromise = new Promise(async(success, fail) =>{
         let rs = await client.execute(`SELECT * FROM ${process.env.table} WHERE cookie_hash = '${cookie_hash}' ALLOW FILTERING;`);
         if(rs.rowLength==1){
@@ -65,8 +77,8 @@ const getCommits =  async (cookie_hash)  =>{
      // await print();
       await addUser('sayan','sayan@gmail.com','cygaigk')
       await addUser('say2an','say2an@gmail.com','cygai2gk')
-      await getCommits('cygaigk').then((a)=>console.log(a)).catch((a)=>console.log('b',a));
-      await getCommits('csaigk').then((a)=>console.log(a)).catch((a)=>console.log('b',a));
+      await getLogs('cygaigk').then((a)=>console.log(a)).catch((a)=>console.log('b',a));
+      await getLogs('csaigk').then((a)=>console.log(a)).catch((a)=>console.log('b',a));
       stop();
 
   }
