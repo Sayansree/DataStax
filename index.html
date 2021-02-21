@@ -1,0 +1,42 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form>
+        <input id="email" name="email" type="email" placeholder="emailid">
+        <input id="uname" name="name"  type="text" placeholder="username">
+        <input id="pass"  name="password" type="password" placeholder="password">
+        
+        <h1 id="msg"></h1>
+    </form>
+    <button onclick=sub()>submmit</button>
+    <script>
+        async function sub(){
+            const email=document.getElementById("email").value;
+            const pass=document.getElementById("pass").value;
+            const uname=document.getElementById("uname").value;
+            const disp=document.getElementById("msg");
+
+            var resp = await fetch('http://localhost:8080/commit',
+            {
+                method:'post',
+                mode:'cors',
+                credentials: 'same-origin',
+                //body : JSON.stringify({'username':uname,'email':email,'password':pass}),
+                //body : JSON.stringify({'username':uname,'email':email,'password':pass}),
+                headers: {"Content-type": "application/json; charset=UTF-8"},
+                
+
+            }
+            ).then((resp)=>{return resp.json();} )
+            .then((resp)=>{console.log( resp)})
+           .catch((err)=>{console.log('fail',resp)})
+           //console.log(res);
+        }
+
+    </script>
+</body>
+</html>

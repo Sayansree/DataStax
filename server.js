@@ -6,6 +6,7 @@ var express = require('express');
 var SHA512 = require('crypto-js/sha512');
 var dotenv = require('dotenv');
 var cors = require('cors');
+var path = require('path');
 
 dotenv.config()
 var app = express();
@@ -16,7 +17,7 @@ const client = new Client({
   });
 
 var appPort=process.env.PORT||8080;
-var cookieTimeout=1; //in minutes
+var cookieTimeout=10; //in minutes
 // var hashName    = SHA512(Name).toString();
 // var hashPass    = SHA512(Pass).toString();
 // var hashCookie  = SHA512(seed).toString();
@@ -28,6 +29,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(upload.array()); 
 app.use(express.static('public'));
   
+app.get('/auth',(request, response)=>{
+  //if(Object.keys(request.cookies).length===0)
+    response.sendFile(path.join( __dirname + '/index.html'));
+  // else if(request.cookies.auth===hashCookie){
+  //   response.redirect("https://www.google.com");
+  //   console.log(Date(),'cookie login' ,request.ip );
+  // //}else{
+  //   response.cookie('auth',null,{maxAge:0});
+  //   response.sendFile(path.join( __dirname + 'index.html'));
+ // }
+});
   app.post('/login',(request,response)=> { 
     if(Object.keys(request.cookies).length===0){
         auth(request.body.email,request.body.password).then((stat) =>{
@@ -44,11 +56,12 @@ app.use(express.static('public'));
   });
   app.post('/signup',(request,response)=> { 
     if(Object.keys(request.cookies).length===0){
-        addUser(request.body.name,request.body.email,request.body.password).then(() =>{
-        response.send(1);
-        console.log(Date(),'manual login successful' ,request.ip );
+        addUser(request.body.username,request.body.email,request.body.password).then(() =>{
+        response.send("registered");
+        console.log(Date(),`user ${request.body.name}` ,request.ip );
     }).catch((stat)=>{
-        response.send(stat);
+      response.body=stat
+        response.send("failed");
         console.log(Date(),'manual login failed',request.ip);
       })
     }
@@ -56,11 +69,11 @@ app.use(express.static('public'));
   app.post('/commit',(request,response)=> { 
     if(Object.keys(request.cookies).length!=0){
         commit(request.cookies.auth,toCol(new Date())).then(() =>{
-        response.send(1);
-        console.log(Date(),'manual login successful' ,request.ip );
+        response.send();
+        console.log(Date(),'commit successful' ,request.ip );
     }).catch((stat)=>{
         response.send(stat);
-        console.log(Date(),'manual login failed',request.ip);
+        console.log(Date(),'commit failed',request.ip);
       })
     }
   });
@@ -68,17 +81,17 @@ app.use(express.static('public'));
     if(Object.keys(request.cookies).length!=0){
         getLogs(request.cookies.auth,toCol(new Date())).then((resp) =>{
         response.send(resp);
-        console.log(Date(),'manual login successful' ,request.ip );
+        console.log(Date(),'logs retrive successful' ,request.ip );
     }).catch((stat)=>{
         response.send(stat);
-        console.log(Date(),'manual login failed',request.ip);
+        console.log(Date(),'logs retrive failed',request.ip);
       })
     }
   });
     
   app.post('/logout',(request,response)=> {
       response.cookie('auth',null,{maxAge:0});
-      response.send(1);
+      response.redirect("/auth");
       console.log(Date(), 'logout', request.ip);
     });
 
@@ -164,16 +177,16 @@ const getLogs =  async (cookie_hash)  =>{
       //await print();
      // await reset();
      // await print();
-      await addUser('sayan','sayan@gmail.com','cygaigk')
-      await addUser('say2an','say2an@gmail.com','cygai2gk')
-      await getLogs('cygaigk').then((a)=>console.log(a)).catch((a)=>console.log('b',a));
-      await getLogs('csaigk').then((a)=>console.log(a)).catch((a)=>console.log('b',a));
-      await auth('a@b.com','asdf').then(()=>console.log("success")).catch((a)=>console.log('error:',a))
-      await auth('a@b.com','aasdf').then(()=>console.log("success")).catch((a)=>console.log('error:',a))
-      await auth('a@ab.com','asdf').then(()=>console.log("success")).catch((a)=>console.log('error:',a))
-      await addcookie('a@b.com','qwerty')
-      await commit('qwerty',toCol(new Date()))
-      stop();
+      // await addUser('sayan','sayan@gmail.com','cygaigk')
+      // await addUser('say2an','say2an@gmail.com','cygai2gk')
+      // await getLogs('cygaigk').then((a)=>console.log(a)).catch((a)=>console.log('b',a));
+      // await getLogs('csaigk').then((a)=>console.log(a)).catch((a)=>console.log('b',a));
+      // await auth('a@b.com','asdf').then(()=>console.log("success")).catch((a)=>console.log('error:',a))
+      // await auth('a@b.com','aasdf').then(()=>console.log("success")).catch((a)=>console.log('error:',a))
+      // await auth('a@ab.com','asdf').then(()=>console.log("success")).catch((a)=>console.log('error:',a))
+      // await addcookie('a@b.com','qwerty')
+      // await commit('qwerty',toCol(new Date()))
+      //stop();
 
   }
-test()
+setup()
