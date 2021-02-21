@@ -10,31 +10,45 @@ const client = new Client({
 async function setup() {
     await client.connect();
     await client.execute(`USE ${process.env.keyspace};`);
-
 }
 async function print() {
     const rs = await client.execute(`SELECT * FROM ${process.env.table};`);
     console.log(`Your cluster returned ${rs.rowLength} row(s)`);
-    console.log(rs.rows[0].email);
+    console.log(rs.rows);
 }
 const stop =        async () => await client.shutdown();
 const createTable = async ()    => await client.execute(`CREATE TABLE IF NOT EXISTS ${process.env.table} (email TEXT PRIMARY KEY, name TEXT, password_hash TEXT, cookie_hash TEXT);`);
 const addColumn =   async (col) => await client.execute(`ALTER TABLE ${process.env.table} ADD t${col} INT`);
 const dropTable =   async ()    => await client.execute(`DROP TABLE IF EXISTS ${process.env.table}`);
 const reset     =   async ()    => { dropTable(); createTable();}
-const addUser   =   async (name,email,hash)    => await client.execute(`INSERT INTO ${process.env.table} (name,email,password_hash) VALUES ('${name}','${email}','${hash}');`);
+const addUser   =   async (name,email,hash)    => await client.execute(`INSERT INTO ${process.env.table} (name,email,cookie_hash) VALUES ('${name}','${email}','${hash}');`);
 const getCommits =  async (cookie_hash)  =>{
-    return myPromise = new Promise((success, fail) =>{
-        const rs = await client.execute(`SELECT t* FROM ${process.env.table} WHERE cookie_hash = ${cookie_hash};`);
-        if(1)
-            success();
-        else
-            fail();
+    return myPromise = new Promise(async(success, fail) =>{
+        let rs = await client.execute(`SELECT * FROM ${process.env.table} WHERE cookie_hash = '${cookie_hash}' ALLOW FILTERING;`);
+        if(rs.rowLength==1){
+            row=rs.rows[0];
+            delete row.cookie_hash;
+            delete row.password_hash;
+            success({'pass': true , 'data' : row});
+        }else
+            fail({'pass' : false});
   })};
 
-setup();
+  async function test() {
+      await setup();
+      await print();
+     // await reset();
+     // await print();
+      await addUser('sayan','sayan@gmail.com','cygaigk')
+      await addUser('say2an','say2an@gmail.com','cygai2gk')
+      await getCommits('cygaigk').then((a)=>console.log(a)).catch((a)=>console.log('b',a));
+      await getCommits('csaigk').then((a)=>console.log(a)).catch((a)=>console.log('b',a));
+      stop();
+
+  }
+test()
 //dropTable();
-print();
+
 //createTable();
 //reset();
 // var s =new Date();
@@ -45,4 +59,3 @@ print();
 
 // print();
 
-stop();
