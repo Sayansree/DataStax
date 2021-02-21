@@ -28,7 +28,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(upload.array()); 
 app.use(express.static('public'));
-  
+
+app.get('/login/script',(request, response)=>{
+    response.sendFile(path.join( __dirname + '/scripts/login.js'));
+});
 app.get('/auth',(request, response)=>{
   //if(Object.keys(request.cookies).length===0)
     response.sendFile(path.join( __dirname + '/index.html'));
@@ -86,10 +89,12 @@ app.get('/auth',(request, response)=>{
         response.send(stat);
         console.log(Date(),'logs retrive failed',request.ip);
       })
+    }else{
+
     }
   });
     
-  app.post('/logout',(request,response)=> {
+  app.get('/logout',(request,response)=> {
       response.cookie('auth',null,{maxAge:0});
       response.redirect("/auth");
       console.log(Date(), 'logout', request.ip);
@@ -154,9 +159,9 @@ const getLogs =  async (cookie_hash)  =>{
             row=rs.rows[0];
             delete row.cookie_hash;
             delete row.password_hash;
-            success({'pass': true , 'data' : row});
+            success({pass: true , data : row});
         }else
-            fail({'pass' : false});
+            fail({pass : false});
   })};
   const auth =  async (email,password_hash)  =>{
     return myPromise = new Promise(async(success, fail) =>{
@@ -164,11 +169,11 @@ const getLogs =  async (cookie_hash)  =>{
         if(rs.rowLength==1){
             row=rs.rows[0];
             if(row.password_hash==password_hash)
-                success({'pass':true});
+                success({pass:true});
             else
-                fail({'pass': false,'email':true});
+                fail({pass: false,email:true});
         }else
-            fail({'pass': false,'email':false});
+            fail({pass: false,email:false});
   })};
 
 
