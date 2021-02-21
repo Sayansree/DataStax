@@ -3,7 +3,6 @@ var  cookieparser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var express = require('express');
-var path = require('path');
 var SHA512 = require('crypto-js/sha512');
 var dotenv = require('dotenv');
 var cors = require('cors');
@@ -32,7 +31,7 @@ app.use(express.static('public'));
   app.post('/login',(request,response)=> { 
     if(Object.keys(request.cookies).length===0){
         auth(request.body.email,request.body.password).then((stat) =>{
-            let hashCookie="cnewciwecfweibi" //////to do generate random hash cookie
+            let hashCookie=SHA512(`${request.body.email}${(new Date()).toUTCString()}`).toString()
         addcookie(request.body.email,hashCookie);
         response.cookie('auth',hashCookie,{maxAge:cookieTimeout*60000});
         response.send(stat);
