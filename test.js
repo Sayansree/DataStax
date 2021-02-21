@@ -1,6 +1,30 @@
 const { Client } = require("cassandra-driver");
+var  cookieparser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var multer = require('multer');
+var express = require('express');
+var path = require('path');
+var SHA512 = require('crypto-js/sha512');
 var dotenv = require('dotenv');
 var cors = require('cors');
+
+dotenv.config()
+var app = express();
+var upload = multer();
+
+
+var appPort=process.env.PORT||8080;
+var cookieTimeout=1; //in minutes
+// var hashName    = SHA512(Name).toString();
+// var hashPass    = SHA512(Pass).toString();
+// var hashCookie  = SHA512(seed).toString();
+
+app.use(cors())
+app.use(cookieparser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true })); 
+app.use(upload.array()); 
+app.use(express.static('public'));
 
 dotenv.config();
 const client = new Client({
@@ -8,11 +32,7 @@ const client = new Client({
     credentials: { username: `${process.env.username}`, password: `${process.env.password}` }
   });
 
-async function print() {
-    const rs = await client.execute(`SELECT * FROM ${process.env.table};`);
-    console.log(`Your cluster returned ${rs.rowLength} row(s)`);
-    console.log(rs.rows);
-}
+
 const ONE_DAY= 86400000;
 
 //converts date to column name
@@ -26,8 +46,13 @@ const updateCol = async () => {
     tomorrow.setDate(tomorrow.getDate()+1);
     await addColumn(toCol(tomorrow)); 
 };
-//
-
+//prints db
+const print = async () => {
+    const rs = await client.execute(`SELECT * FROM ${process.env.table};`);
+    console.log(`Your cluster returned ${rs.rowLength} row(s)`);
+    console.log(rs.rows);
+}
+//runs at begining
 const setup = async () => { 
     await client.connect(); 
     await client.execute(`USE ${process.env.keyspace};`);
@@ -51,7 +76,6 @@ const addcookie =   async (email,cookie_hash) => await client.execute(`UPDATE ${
 const commit =   async (cookie_hash,col) => {
     let rs = await client.execute(`SELECT ${col},email FROM ${process.env.table} WHERE cookie_hash = '${cookie_hash}' ALLOW FILTERING;`);
     let v=rs.rows[0][col];
-    console.log(rs)
     if(v==null) v=1;
     else v++;
     await client.execute(`UPDATE ${process.env.table} SET ${col} = ${v} WHERE email = '${rs.rows[0].email}'`);
@@ -99,15 +123,3 @@ const getLogs =  async (cookie_hash)  =>{
 
   }
 test()
-//dropTable();
-
-//createTable();
-//reset();
-// var s =new Date();
-// s=s.toISOString();
-// s=t+s.substr(0,4)+s.substr(5,2)+s.substr(8,2)
-// //addColumn(s)
-// addUser('sayan','sayan@gmail.com','cygaigk')
-
-// print();
-
