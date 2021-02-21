@@ -1,16 +1,16 @@
 
 const login=document.getElementById("login");
-login.onclick = () => {
-    const email=document.getElementById("email").value;
-    const pass=document.getElementById("pass").value;
-    const msg=document.getElementById("msg");
+login.onclick = async () => {
+    const email=document.getElementById("login-email").value;
+    const pass=document.getElementById("login-pass").value;
+    const msg=document.getElementById("login-msg");
     msg.innerHTML= "loading...";
     fetch('/login',
     {
         method:'post',
         mode:'cors',
         credentials: 'same-origin',
-        body : JSON.stringify({'email':email,'password':pass}),
+        body : JSON.stringify({'email':email,'password':CryptoJS.SHA512(pass).toString()}),
         headers: {"Content-type": "application/json; charset=UTF-8"},
     }
     ).then((resp)=>{return resp.json();} )

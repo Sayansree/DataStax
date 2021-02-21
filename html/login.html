@@ -23,26 +23,25 @@
            </center>
               
             <h1 class="h3 mb-3 font-weight-normal" style="text-align: center"> Sign in</h1>
-            <center>
+            <!-- <center>
                 <div class="social-login">
                     <button class="loginBtn loginBtn--google" type="button"><span><i class="fab fa-google-g"></i> Sign in with Google</span> </button>
                 </div>
             </center>
             
-            <p style="text-align:center"> OR  </p>
-            <input type="email" id="email" class="form-control" placeholder="Email address" required="" autofocus="">
-            <input type="password" id="pass" class="form-control" placeholder="Password" required="">
-            <h3 style="color: red;" type="message" id="msg"> </h3>
+            <p style="text-align:center"> OR  </p> -->
+            <input type="email" id="login-email" class="form-control" placeholder="Email address" required="" autofocus="">
+            <input type="password" id="login-pass" class="form-control" placeholder="Password" required="">
+            <h3 style="color: red;" type="message" id="login-msg"> </h3>
+            <button id="login" onclick=login() class="btn btn-success btn-block" ><i class="fas fa-sign-in-alt"></i> Sign in</button>
 
-            <button class="btn btn-success btn-block" type="submit"><i class="fas fa-sign-in-alt"></i> Sign in</button>
-
-            <a href="#" id="forgot_pswd">Forgot password?</a>
+            <!-- <a href="#" id="forgot_pswd">Forgot password?</a> -->
             <hr>
-            <!-- <p>Don't have an account!</p>  -->
+            <p>Don't have an account!</p>
             <button class="btn btn-primary btn-block" type="button" id="btn-signup"><i class="fas fa-user-plus"></i> Sign up New Account</button>
-            </form>
+            </form> 
 
-            <form action="/reset/password/" class="form-reset">
+            <!--<form action="#" class="form-reset">
                 <center>
                     <div class="heading">
                         <h1>FitHub</h1>
@@ -51,27 +50,27 @@
                 <input type="email" id="resetEmail" class="form-control" placeholder="Email address" required="" autofocus="">
                 <button class="btn btn-primary btn-block" type="submit">Reset Password</button>
                 <a href="#" id="cancel_reset"><i class="fas fa-angle-left"></i> Back</a>
-            </form>
+            </form> -->
             
-            <form action="/signup/" class="form-signup">
+            <form  class="form-signup">
                 <center>
                     <div class="heading">
                         <h1>FitHub</h1>
                       </div>
                    </center>
-                <center> 
+                <!-- <center> 
                     <div class="social-login">
                         <button class="btn google-btn social-btn" type="button"><span><i class="fab fa-google-g"></i> Sign up with Google</span> </button>
                     </div>
-                </center>
+                </center> -->
                 
                 <p style="text-align:center">OR</p>
 
-                <input type="text" id="uname" class="form-control" placeholder="Full name" required="" autofocus="">
-                <input type="email" id="email" class="form-control" placeholder="Email address" required autofocus="">
-                <input type="password" id="pass" class="form-control" placeholder="Password" required autofocus="">
+                <input type="text" id="sign-uname" class="form-control" placeholder="Full name" required="" autofocus="">
+                <input type="email" id="sign-email" class="form-control" placeholder="Email address" required autofocus="">
+                <input type="password" id="sign-pass" class="form-control" placeholder="Password" required autofocus="">
                 
-                <button class="btn btn-primary btn-block" type="submit"><i class="fas fa-user-plus"></i> Sign Up</button>
+                <button id="signup" class="btn btn-primary btn-block" ><i class="fas fa-user-plus"></i> Sign Up</button>
                 <a href="#" id="cancel_signup"><i class="fas fa-angle-left"></i> Back</a>
             </form>
             <br>

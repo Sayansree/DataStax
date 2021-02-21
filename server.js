@@ -65,7 +65,6 @@ app.get('/',(request, response)=>{
 
   app.post('/login',(request,response)=> { 
     if(Object.keys(request.cookies).length===0){
-      console.log(request.body.email,request.body.password)
         auth(request.body.email,request.body.password).then((stat) =>{
           let hashCookie=SHA512(`${request.body.email}${(new Date()).toUTCString()}`).toString()
           addcookie(request.body.email,hashCookie);
@@ -80,6 +79,7 @@ app.get('/',(request, response)=>{
   });
   app.post('/signup',(request,response)=> { 
     if(Object.keys(request.cookies).length===0){
+      console.log(request.body.email,request.body.email,request.body.password)
         addUser(request.body.username,request.body.email,request.body.password).then(() =>{
         response.send("registered");
         console.log(Date(),`user ${request.body.name}` ,request.ip );
