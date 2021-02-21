@@ -13,15 +13,17 @@ async function print() {
     console.log(`Your cluster returned ${rs.rowLength} row(s)`);
     console.log(rs.rows);
 }
+//converts date to column name
+const toCol = (date) => {s=date.toISOString(); s='t'+s.substr(0,4)+s.substr(5,2)+s.substr(8,2); return s;}
+//
 //root functions
 const setup       = async () => { 
     await client.connect(); 
     await client.execute(`USE ${process.env.keyspace};`);
     await createTable();
-    let s =new Date();
-    console.log(s.toISOString())
-s.setDate(s.getDate()+1)
-console.log(s.toISOString())};
+    let today =new Date();
+    await addColumn();
+};
 const stop        = async () =>   await client.shutdown();
 const createTable = async () =>   await client.execute(`CREATE TABLE IF NOT EXISTS ${process.env.table} (email TEXT PRIMARY KEY, name TEXT, password_hash TEXT, cookie_hash TEXT);`);
 const dropTable   = async () =>   await client.execute(`DROP TABLE IF EXISTS ${process.env.table}`);
@@ -66,4 +68,3 @@ test()
 
 // print();
 
-const toCol = (date) => {s=date.toISOString(); s=t+s.substr(0,4)+s.substr(5,2)+s.substr(8,2); return s;}
