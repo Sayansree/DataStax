@@ -11,7 +11,10 @@ var cors = require('cors');
 dotenv.config()
 var app = express();
 var upload = multer();
-
+const client = new Client({
+    cloud: { secureConnectBundle: __dirname+ `/secure/secure-connect-${process.env.db}.zip` },
+    credentials: { username: `${process.env.username}`, password: `${process.env.password}` }
+  });
 
 var appPort=process.env.PORT||8080;
 var cookieTimeout=1; //in minutes
@@ -26,14 +29,54 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(upload.array()); 
 app.use(express.static('public'));
 
-dotenv.config();
-const client = new Client({
-    cloud: { secureConnectBundle: __dirname+ `/secure/secure-connect-${process.env.db}.zip` },
-    credentials: { username: `${process.env.username}`, password: `${process.env.password}` }
+
+  app.get('/auth',(request, response)=>{
+    if(Object.keys(request.cookies).length===0)
+      response.sendFile(path.join( __dirname + '/html/login.html'));
+    else if(request.cookies.auth===hashCookie){
+      response.redirect("/secret");
+      console.log(Date(),'cookie login' ,request.ip );
+    }else{
+      response.cookie('auth',null,{maxAge:0});
+      response.sendFile(path.join( __dirname + '/html/login.html'));
+    }
+  });
+  
+  app.post('/login',(request,response)=> { 
+    if(Object.keys(request.cookies).length===0){
+        auth(request.body.email,request.body.password).then((stat) =>{
+            let hashCookie="cnewciwecfweibi" //////to do generate random hash cookie
+        response.cookie('auth',hashCookie,{maxAge:cookieTimeout*60000});
+        response.send(stat);
+        console.log(Date(),'manual login successful' ,request.ip );
+    }).catch((stat)=>{
+        response.send(stat);
+        console.log(Date(),'manual login failed',request.ip);
+      })
+    }else if(request.cookies.auth===hashCookie){
+      response.redirect("/secret");
+      console.log(Date(),'cookie login' ,request.ip );
+    }
+  });
+    
+  app.post('/logout',(request,response)=> {
+      response.cookie('auth',null,{maxAge:0});
+      response.redirect("/auth");
+      console.log(Date(), 'logout', request.ip);
+    });
+  
+  app.get('/logout',(request,response)=> {
+    response.cookie('auth',null,{maxAge:0});
+    response.redirect("/auth");
+    console.log(Date(), 'logout', request.ip);
   });
 
 
-const ONE_DAY= 86400000;
+  app.listen(appPort,()=>{
+    console.log(Date(), `APP SERVER ONLINE http://localhost:${appPort}`);
+  });
+  /////////////////////////////////////////////////////database queries////////////////////////////////////////////////////////////////
+  const ONE_DAY= 86400000;
 
 //converts date to column name
 const toCol = (date) => {
@@ -97,11 +140,11 @@ const getLogs =  async (cookie_hash)  =>{
         if(rs.rowLength==1){
             row=rs.rows[0];
             if(row.password_hash==password_hash)
-                success();
+                success({'pass':true});
             else
-                fail({'email':true});
+                fail({'pass': false,'email':true});
         }else
-            fail({'email':false});
+            fail({'pass': false,'email':false});
   })};
 
 
