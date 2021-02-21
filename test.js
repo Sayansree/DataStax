@@ -37,7 +37,7 @@ const setup = async () => {
     await addColumn(toCol(today));
     await updateCol();
 };
-
+//INSERT INTO users (name,email,password_hash,cookie_hash) VALUES ('lol','a@b.com','asdf','qwer');
 //root functions
 const stop        = async () =>   await client.shutdown();
 const createTable = async () =>   await client.execute(`CREATE TABLE IF NOT EXISTS ${process.env.table} (email TEXT PRIMARY KEY, name TEXT, password_hash TEXT, cookie_hash TEXT);`);
@@ -47,6 +47,7 @@ const reset       = async () => { await dropTable(); await createTable();}
 //data manupulation
 const addColumn =   async (col) => await client.execute(`ALTER TABLE ${process.env.table} ADD ${col} INT`).catch((err)=>console.log(`ignoring ${col} column already exists`));
 const addUser   =   async (name,email,password_hash)    => await client.execute(`INSERT INTO ${process.env.table} (name,email,password_hash) VALUES ('${name}','${email}','${password_hash}');`);
+const addcookie =   async (email,cookie_hash) => await client.execute(`UPDATE ${process.env.table} SET cookie_hash = '${cookie_hash}' WHERE EMAIL = '${email}'`)
 const getLogs =  async (cookie_hash)  =>{
     return myPromise = new Promise(async(success, fail) =>{
         let rs = await client.execute(`SELECT * FROM ${process.env.table} WHERE cookie_hash = '${cookie_hash}' ALLOW FILTERING;`);
@@ -60,25 +61,31 @@ const getLogs =  async (cookie_hash)  =>{
   })};
   const auth =  async (email,password_hash)  =>{
     return myPromise = new Promise(async(success, fail) =>{
-        let rs = await client.execute(`SELECT * FROM ${process.env.table} WHERE cookie_hash = '${cookie_hash}' ALLOW FILTERING;`);
+        let rs = await client.execute(`SELECT password_hash FROM ${process.env.table} WHERE email = '${email}' ALLOW FILTERING;`);
         if(rs.rowLength==1){
             row=rs.rows[0];
-            delete row.cookie_hash;
-            delete row.password_hash;
-            success({'pass': true , 'data' : row});
+            if(row.password_hash==password_hash)
+                success();
+            else
+                fail({'email':true});
         }else
-            fail({'pass' : false});
+            fail({'email':false});
   })};
+
 
   async function test() {
       await setup();
-      await print();
+      //await print();
      // await reset();
      // await print();
       await addUser('sayan','sayan@gmail.com','cygaigk')
       await addUser('say2an','say2an@gmail.com','cygai2gk')
       await getLogs('cygaigk').then((a)=>console.log(a)).catch((a)=>console.log('b',a));
       await getLogs('csaigk').then((a)=>console.log(a)).catch((a)=>console.log('b',a));
+      await auth('a@b.com','asdf').then(()=>console.log("success")).catch((a)=>console.log('error:',a))
+      await auth('a@b.com','aasdf').then(()=>console.log("success")).catch((a)=>console.log('error:',a))
+      await auth('a@ab.com','asdf').then(()=>console.log("success")).catch((a)=>console.log('error:',a))
+      await addcookie('a@b.com','qwerty')
       stop();
 
   }
