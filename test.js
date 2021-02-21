@@ -21,20 +21,22 @@ const toCol = (date) => {
     return s;
 };
 const updateCol = async () => { 
-    let tommrow =new Date(); 
-    tommrow.setDate(tommrow.getDate()+1);
-    await addColumn(toCol(today)); 
+    let tomorrow =new Date(); 
+    tomorrow.setDate(tommrow.getDate()+1);
+    await addColumn(toCol(tomorrow)); 
 };
 //
 
-const setup       = async () => { 
+const setup = async () => { 
     await client.connect(); 
     await client.execute(`USE ${process.env.keyspace};`);
     await createTable();
     let today =new Date();
-    await addColumn(toCol(today));
     setInterval(updateCol, ONE_DAY);
+    await addColumn(toCol(today));
+    await updateCol();
 };
+
 //root functions
 const stop        = async () =>   await client.shutdown();
 const createTable = async () =>   await client.execute(`CREATE TABLE IF NOT EXISTS ${process.env.table} (email TEXT PRIMARY KEY, name TEXT, password_hash TEXT, cookie_hash TEXT);`);
