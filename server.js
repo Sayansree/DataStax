@@ -29,11 +29,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(upload.array()); 
 app.use(express.static('public'));
 
+app.get('/signup/script',(request, response)=>{
+  response.sendFile(path.join( __dirname + '/scripts/signup.js'));
+});
 app.get('/login/script',(request, response)=>{
     response.sendFile(path.join( __dirname + '/scripts/login.js'));
 });
-app.get('/signup/script',(request, response)=>{
-  response.sendFile(path.join( __dirname + '/scripts/signup.js'));
+
+app.get('/login/script/main',(request, response)=>{
+  response.sendFile(path.join( __dirname + '/scripts/loginmain.js'));
+});
+app.get('/login/style',(request, response)=>{
+response.sendFile(path.join( __dirname + '/style/login.css'));
 });
 
 app.get('/auth',(request, response)=>{

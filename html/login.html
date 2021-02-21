@@ -1,18 +1,87 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="/login/style">
+    <title>Login-Register</title>
 </head>
 <body>
-    <form>
-        <input id="email" name="email" type="email" placeholder="emailid">
-        <input id="pass"  name="password" type="password" placeholder="password">
-        
-        <h1 id="msg"></h1>
-    </form>
-    <button id="login">submmit</button>
+    <div id="logreg-forms">
+        <form class="form-signin">
+           <center>
+            <div class="heading">
+                <h1>FitHub</h1>
+              </div>
+           </center>
+              
+            <h1 class="h3 mb-3 font-weight-normal" style="text-align: center"> Sign in</h1>
+            <center>
+                <div class="social-login">
+                    <button class="loginBtn loginBtn--google" type="button"><span><i class="fab fa-google-g"></i> Sign in with Google</span> </button>
+                </div>
+            </center>
+            
+            <p style="text-align:center"> OR  </p>
+            <input type="email" id="email" class="form-control" placeholder="Email address" required="" autofocus="">
+            <input type="password" id="pass" class="form-control" placeholder="Password" required="">
+            <h3 style="color: red;" type="message" id="msg"> </h3>
+
+            <button class="btn btn-success btn-block" type="submit"><i class="fas fa-sign-in-alt"></i> Sign in</button>
+
+            <a href="#" id="forgot_pswd">Forgot password?</a>
+            <hr>
+            <!-- <p>Don't have an account!</p>  -->
+            <button class="btn btn-primary btn-block" type="button" id="btn-signup"><i class="fas fa-user-plus"></i> Sign up New Account</button>
+            </form>
+
+            <form action="/reset/password/" class="form-reset">
+                <center>
+                    <div class="heading">
+                        <h1>FitHub</h1>
+                      </div>
+                   </center>
+                <input type="email" id="resetEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+                <button class="btn btn-primary btn-block" type="submit">Reset Password</button>
+                <a href="#" id="cancel_reset"><i class="fas fa-angle-left"></i> Back</a>
+            </form>
+            
+            <form action="/signup/" class="form-signup">
+                <center>
+                    <div class="heading">
+                        <h1>FitHub</h1>
+                      </div>
+                   </center>
+                <center> 
+                    <div class="social-login">
+                        <button class="btn google-btn social-btn" type="button"><span><i class="fab fa-google-g"></i> Sign up with Google</span> </button>
+                    </div>
+                </center>
+                
+                <p style="text-align:center">OR</p>
+
+                <input type="text" id="uname" class="form-control" placeholder="Full name" required="" autofocus="">
+                <input type="email" id="email" class="form-control" placeholder="Email address" required autofocus="">
+                <input type="password" id="pass" class="form-control" placeholder="Password" required autofocus="">
+                
+                <button class="btn btn-primary btn-block" type="submit"><i class="fas fa-user-plus"></i> Sign Up</button>
+                <a href="#" id="cancel_signup"><i class="fas fa-angle-left"></i> Back</a>
+            </form>
+            <br>
+            
+    </div>
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="/login/script/main"></script>
+    <script src="/login/script/"></script>
+    <script src="/signup/script/"></script>
 </body>
-<script src="/login/script"></script>
 </html>
