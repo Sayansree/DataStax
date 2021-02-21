@@ -12,8 +12,8 @@ async function sub(){
         body : JSON.stringify({'username':uname,'email':email,'password':pass}),
         headers: {"Content-type": "application/json; charset=UTF-8"},
     }
-    ).then((resp)=>{return resp.json();} )
+    ).then((resp)=>{return resp.text();} )
     .then((resp)=>{console.log(resp);
-        msg.innerHTML= (!resp.pass)?((!resp.email)?"account not registered with the current email":"incorrect password"):"login successful";})
+        msg.innerHTML= resp;})
    .catch((err)=>{console.log('fail',resp)})
 }

@@ -32,16 +32,33 @@ app.use(express.static('public'));
 app.get('/login/script',(request, response)=>{
     response.sendFile(path.join( __dirname + '/scripts/login.js'));
 });
+app.get('/signup/script',(request, response)=>{
+  response.sendFile(path.join( __dirname + '/scripts/signup.js'));
+});
+
 app.get('/auth',(request, response)=>{
-  //if(Object.keys(request.cookies).length===0)
+  if(Object.keys(request.cookies).length===0)
+    response.sendFile(path.join( __dirname + '/html/login.html'));
+  else if(request.cookies.auth===hashCookie){
+     response.redirect("/");
+    console.log(Date(),'cookie login' ,request.ip );
+  }else{
+    response.cookie('auth',null,{maxAge:0});
+    response.sendFile(path.join( __dirname + '/html/login.html'));
+  }
+
+});
+app.get('/',(request, response)=>{
+  if(Object.keys(request.cookies).length===0)
     response.sendFile(path.join( __dirname + '/index.html'));
-  // else if(request.cookies.auth===hashCookie){
-  //   response.redirect("https://www.google.com");
-  //   console.log(Date(),'cookie login' ,request.ip );
-  // //}else{
-  //   response.cookie('auth',null,{maxAge:0});
-  //   response.sendFile(path.join( __dirname + 'index.html'));
- // }
+  else if(request.cookies.auth===hashCookie){
+     response.redirect("/");
+    console.log(Date(),'cookie login' ,request.ip );
+  }else{
+    response.cookie('auth',null,{maxAge:0});
+    response.sendFile(path.join( __dirname + 'index.html'));
+  }
+
 });
   app.post('/login',(request,response)=> { 
     if(Object.keys(request.cookies).length===0){
@@ -145,6 +162,15 @@ const reset       = async () => { await dropTable(); await createTable();}
 const addColumn =   async (col) => await client.execute(`ALTER TABLE ${process.env.table} ADD ${col} INT`).catch((err)=>console.log(`ignoring ${col} column already exists`));
 const addUser   =   async (name,email,password_hash)    => await client.execute(`INSERT INTO ${process.env.table} (name,email,password_hash) VALUES ('${name}','${email}','${password_hash}');`);
 const addcookie =   async (email,cookie_hash) => await client.execute(`UPDATE ${process.env.table} SET cookie_hash = '${cookie_hash}' WHERE EMAIL = '${email}'`)
+const checkCookies =   async (cookie_hash) => {
+  return myPromise = new Promise(async(success, fail) =>{
+    let rs = await client.execute(`SELECT email FROM ${process.env.table} WHERE cookie_hash = '${cookie_hash}' ALLOW FILTERING;`);
+    if(rs.rowLength==1){
+      success();
+    }else
+      fail();
+  })
+};
 const commit =   async (cookie_hash,col) => {
     let rs = await client.execute(`SELECT ${col},email FROM ${process.env.table} WHERE cookie_hash = '${cookie_hash}' ALLOW FILTERING;`);
     let v=rs.rows[0][col];
@@ -191,6 +217,8 @@ const getLogs =  async (cookie_hash)  =>{
       // await auth('a@ab.com','asdf').then(()=>console.log("success")).catch((a)=>console.log('error:',a))
       // await addcookie('a@b.com','qwerty')
       // await commit('qwerty',toCol(new Date()))
+       //await checkCookies('7d6824ef6c5d09f7807f876e0a6a001950d5d9b56e2d3290a2044a0ddba2086d26b4bdfcebad60f0b3a2a7c3102d4d423e2c5b668855e9687f87fe53b1d54c17')
+       //.then(()=>console.log("success")).catch(()=>console.log('error:'))
       //stop();
 
   }
