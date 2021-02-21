@@ -43,6 +43,17 @@ app.use(express.static('public'));
       })
     }
   });
+  app.post('/signup',(request,response)=> { 
+    if(Object.keys(request.cookies).length===0){
+        addUser(request.body.name,request.body.email,request.body.password).then((stat) =>{
+        response.send(1);
+        console.log(Date(),'manual login successful' ,request.ip );
+    }).catch((stat)=>{
+        response.send(stat);
+        console.log(Date(),'manual login failed',request.ip);
+      })
+    }
+  });
     
   app.post('/logout',(request,response)=> {
       response.cookie('auth',null,{maxAge:0});
