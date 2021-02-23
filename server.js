@@ -29,12 +29,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(upload.array()); 
 app.use(express.static('public'));
 
-app.get('/auth/signup/script',(request, response)=>{
-  response.sendFile(path.join( __dirname + '/scripts/signup.js'));
-});
-app.get('/auth/login/script',(request, response)=>{
-    response.sendFile(path.join( __dirname + '/scripts/login.js'));
-});
 app.get('/auth/script',(request, response)=>{
   response.sendFile(path.join( __dirname + '/scripts/auth.js'));
 });
@@ -242,5 +236,5 @@ const getLogs =  async (cookie_hash)  =>{
       //stop();
 
   }
-setup();
+//setup();
 test();
