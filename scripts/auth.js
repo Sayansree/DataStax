@@ -36,12 +36,18 @@ window.onload =()=>{
                     msglogin.innerHTML = "login successful";
                     msglogin.style.color = "green";
                     setTimeout(()=>window.open("/","_self"),2000);
+                }else if(resp.email){
+                    msglogin.style.color = "red";
+                    msglogin.innerHTML = "incorrect password";
                 }else{
                     msglogin.style.color = "red";
-                    msglogin.innerHTML = (resp.email)?"incorrect password":"account not registered with the current email, register your account first ";
+                    msglogin.innerHTML = "account not registered with the current email, register your account first ";
                 }
             })
-        .catch(()=>{console.log('connection error')})
+        .catch(()=>{ 
+            msglogin.style.color = "red";
+            msglogin.innerHTML = "connection error";
+        })
     }
     
     signupbtn.onclick = async() => {
@@ -59,8 +65,20 @@ window.onload =()=>{
             headers: {"Content-type": "application/json; charset=UTF-8"},
         }
         ).then((resp)=>resp.json())
-        .then((resp)=>{console.log(resp);
-            msgsignup.innerHTML= resp;})
-    .catch((err)=>{console.log('fail',resp)})
+        .then((resp)=>{
+            if (resp.exists){
+                msgsignup.style.color = "red";
+                msgsignup.innerHTML= "account already registered  with this email please login ";
+            }else if(resp.status){
+                msgsignup.style.color = "green";
+                msgsignup.innerHTML= "your account has been successfully registered";
+            }else{
+                msgsignup.style.color = "orange";
+                msgsignup.innerHTML= "some error occoured, try again";
+            }
+        }).catch(()=>{
+            msgsignup.style.color = "red";
+            msgsignup.innerHTML = "connection error";
+        })
     }
 }

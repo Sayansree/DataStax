@@ -78,7 +78,6 @@ app.get('/',(request, response)=>{
     if(Object.keys(request.cookies).length===0){
       checkemail(request.body.email).then(()=>{
         response.send({exists:true});
-        console.log(Date(),`user ${request.body.username} registered` ,request.ip );
       }).catch(()=>addUser(request.body.username,request.body.email,request.body.password)
       .then(() =>{
         response.send({exists:false,status:true});
@@ -86,7 +85,7 @@ app.get('/',(request, response)=>{
       }).catch((stat)=>{
       response.body=stat
         response.send({exists:false,status:false});
-        console.log(Date(),'manual login failed',request.ip);
+        console.log(Date(),`registration of ${request.body.username} failed`,request.ip);
       })
       )
     }
@@ -236,5 +235,5 @@ const getLogs =  async (cookie_hash)  =>{
       //stop();
 
   }
-//setup();
+setup();
 test();

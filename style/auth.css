@@ -11,7 +11,7 @@
 }
  h1, h2, h3, p {
     text-align: center;
-    color: #440030;
+    color: #222222;
     /* font-size: 24px; */
     /* padding: 20px 0 20px 0; */
     font-family: 'Big Shoulders Display', cursive;
@@ -21,12 +21,12 @@
     width: 80%;
     padding: 15px;
     left: -50%;
-    border: 1px solid #880E4F;
+    border: 1px solid grey;
     margin-bottom: 15px;
     margin-left: 10%;
     margin-right: 10%;
     box-sizing:border-box;
-    background-color: #E57373;
+    background-color: #aaaaaa;
     text-decoration: solid;
     color: #F8BBD0;
     border-radius: 5px;
@@ -52,7 +52,7 @@ button{
     background-color: #007bff;
 }
 ::placeholder{
-   color: #AD1457;
+   color: #888888;
 }
 /* #logreg-forms form {
     width: 100%;
@@ -121,7 +121,7 @@ button{
 .loginBtn {
     box-sizing: border-box;
     position: relative;
-    /* width: 13em;  - apply for fixed size */
+    /* width: 13em;  - apply for fixed size 
     margin: 0.2em;
     padding: 0 15px 0 46px;
     border: none;
@@ -151,7 +151,7 @@ button{
  
 
 .loginBtn--google {
-    /*font-family: "Roboto", Roboto, arial, sans-serif;*/
+    /*font-family: "Roboto", Roboto, arial, sans-serif;
     background: #39b7dd;
   }
   .loginBtn--google:before {
@@ -168,10 +168,10 @@ button{
     top: 0px;
     border: 1px solid blue;
     z-index: 1;
-    /* Make the logo and <h1> overlap */
-  }
+    /* Make the logo and <h1> overlap 
+  }*/
 /* Mobile */
-
+/*
 @media screen and (max-width:500px){
     #logreg-forms{
         width:300px;
