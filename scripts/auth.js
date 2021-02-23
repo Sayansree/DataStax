@@ -4,6 +4,9 @@ window.onload =()=>{
     const btnsignup=document.getElementById("btn-signup");
     const btnlogin=document.getElementById("btn-login");
     const loginbtn=document.getElementById("login");
+    const signupbtn=document.getElementById("signup");
+    const msglogin=document.getElementById("login-msg");
+    const msgsignup=document.getElementById("sign-msg");
     signup.style.display="none";
     btnlogin.onclick = () => {
       login.style.display="block";
@@ -17,8 +20,8 @@ window.onload =()=>{
     loginbtn.onclick = async () => {
         const email=document.getElementById("login-email").value;
         const pass=document.getElementById("login-pass").value;
-        const msg=document.getElementById("login-msg");
-        msg.innerHTML= "loading...";
+        msglogin.innerHTML= "loading...";
+        msglogin.style.color = "blue";
         fetch('/login',
         {
             method:'post',
@@ -30,12 +33,33 @@ window.onload =()=>{
         ).then((resp)=>{return resp.json();} )
         .then((resp)=>{console.log(resp);
                 if(resp.pass){
-                    msg.innerHTML = "login successful";
+                    msglogin.innerHTML = "login successful";
+                    msglogin.style.color = "green";
                     setTimeout(()=>window.open("/","_self"),2000);
                 }else{
-                    msg.innerHTML = (resp.email)?"incorrect password":"account not registered with the current email";
+                    msglogin.style.color = "red";
+                    msglogin.innerHTML = (resp.email)?"incorrect password":"account not registered with the current email";
                 }
             })
         .catch(()=>{console.log('connection error')})
+    }
+    
+    signupbtn.onclick = async() => {
+        const email=document.getElementById("sign-email").value;
+        const pass=document.getElementById("sign-pass").value;
+        const uname=document.getElementById("sign-uname").value;       
+        msgsignup.innerHTML= "loading...";
+        var resp = await fetch('/signup',
+        {
+            method:'post',
+            mode:'cors',
+            credentials: 'same-origin',
+            body : JSON.stringify({'username':uname,'email':email,'password':CryptoJS.SHA512(pass).toString()}),
+            headers: {"Content-type": "application/json; charset=UTF-8"},
+        }
+        ).then((resp)=>{return resp.text();} )
+        .then((resp)=>{console.log(resp);
+            msgsignup.innerHTML= resp;})
+    .catch((err)=>{console.log('fail',resp)})
     }
 }
