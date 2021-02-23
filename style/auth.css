@@ -1,12 +1,60 @@
 /* sign in FORM */
-#logreg-forms{
+#login-forms{
     width:412px;
     margin:10vh auto;
     background-color:#f3f3f3;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    top:50%;
+    left: 50%;  
+    font-family: Tahoma, Geneva, sans-serif;
 }
-#logreg-forms form {
+ h1, h2, h3, p {
+    text-align: center;
+    color: #440030;
+    /* font-size: 24px; */
+    /* padding: 20px 0 20px 0; */
+    font-family: 'Big Shoulders Display', cursive;
+
+}
+ input {
+    width: 80%;
+    padding: 15px;
+    left: -50%;
+    border: 1px solid #880E4F;
+    margin-bottom: 15px;
+    margin-left: 10%;
+    margin-right: 10%;
+    box-sizing:border-box;
+    background-color: #E57373;
+    text-decoration: solid;
+    color: #F8BBD0;
+    border-radius: 5px;
+    
+}
+button{
+    width: 50%;
+    padding: 15px;
+    background-color:  #28a745;
+    border: 0;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ffffff;
+    border-radius: 5px;
+}
+#login,
+#signup{
+    background-color: #007bff;
+}
+::placeholder{
+   color: #AD1457;
+}
+/* #logreg-forms form {
     width: 100%;
     max-width: 410px;
     padding: 15px;
@@ -156,4 +204,4 @@
         content:'Google';
     }
     
-}
+} */

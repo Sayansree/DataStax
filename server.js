@@ -29,18 +29,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(upload.array()); 
 app.use(express.static('public'));
 
-app.get('/signup/script',(request, response)=>{
+app.get('/auth/signup/script',(request, response)=>{
   response.sendFile(path.join( __dirname + '/scripts/signup.js'));
 });
-app.get('/login/script',(request, response)=>{
+app.get('/auth/login/script',(request, response)=>{
     response.sendFile(path.join( __dirname + '/scripts/login.js'));
 });
-
-app.get('/login/script/main',(request, response)=>{
-  response.sendFile(path.join( __dirname + '/scripts/loginmain.js'));
+app.get('/auth/script',(request, response)=>{
+  response.sendFile(path.join( __dirname + '/scripts/auth.js'));
 });
-app.get('/login/style',(request, response)=>{
-response.sendFile(path.join( __dirname + '/style/login.css'));
+
+// app.get('/login/script/main',(request, response)=>{
+//   response.sendFile(path.join( __dirname + '/scripts/loginmain.js'));
+// });
+app.get('/auth/style',(request, response)=>{
+response.sendFile(path.join( __dirname + '/style/auth.css'));
 });
 
 app.get('/auth',(request, response)=>{
@@ -82,7 +85,7 @@ app.get('/',(request, response)=>{
       console.log(request.body.email,request.body.email,request.body.password)
         addUser(request.body.username,request.body.email,request.body.password).then(() =>{
         response.send("registered");
-        console.log(Date(),`user ${request.body.name}` ,request.ip );
+        console.log(Date(),`user ${request.body.username}` ,request.ip );
     }).catch((stat)=>{
       response.body=stat
         response.send("failed");
@@ -160,7 +163,7 @@ const setup = async () => {
 const stop        = async () =>   await client.shutdown();
 const createTable = async () =>   await client.execute(`CREATE TABLE IF NOT EXISTS ${process.env.table} (email TEXT PRIMARY KEY, name TEXT, password_hash TEXT, cookie_hash TEXT);`);
 const dropTable   = async () =>   await client.execute(`DROP TABLE IF EXISTS ${process.env.table}`);
-const reset       = async () => { await dropTable(); await createTable();}
+const reset       = async () => { await dropTable(); await createTable();let today =new Date(); setInterval(updateCol, ONE_DAY);await addColumn(toCol(today));await updateCol();}
 
 //data manupulation
 const addColumn =   async (col) => await client.execute(`ALTER TABLE ${process.env.table} ADD ${col} INT`).catch((err)=>console.log(`ignoring ${col} column already exists`));
