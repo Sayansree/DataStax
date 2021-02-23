@@ -17,10 +17,7 @@ const client = new Client({
   });
 
 var appPort=process.env.PORT||8080;
-var cookieTimeout=10; //in minutes
-// var hashName    = SHA512(Name).toString();
-// var hashPass    = SHA512(Pass).toString();
-// var hashCookie  = SHA512(seed).toString();
+var cookieTimeout=10;
 
 app.use(cors())
 app.use(cookieparser());
@@ -98,10 +95,10 @@ app.get('/',(request, response)=>{
   app.post('/commit',(request,response)=> { 
     if(Object.keys(request.cookies).length!=0){
         commit(request.cookies.auth,toCol(new Date())).then(() =>{
-        response.send("committed");
+        response.send({pass:true});
         console.log(Date(),'commit successful' ,request.ip );
-    }).catch((stat)=>{
-        response.send("sorry couldn't commit");
+    }).catch(()=>{
+        response.send({pass:false});
         console.log(Date(),'commit failed',request.ip);
       })
     }

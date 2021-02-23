@@ -3,6 +3,7 @@ window.onload = ()=>{
     const commit=document.getElementById("commit");
     commit.onclick= async()=>{
             const msg=document.getElementById("msg");
+            msg.style.color="blue"
             msg.innerHTML= "loading...";
             var resp = await fetch('/commit',
             {
@@ -11,12 +12,19 @@ window.onload = ()=>{
                 credentials: 'same-origin',
                 headers: {"Content-type": "application/json; charset=UTF-8"},
             }
-            ).then((resp)=>{return resp.text();} )
-            .then((resp)=>{console.log(resp);
-                msg.innerHTML= resp;
+            ).then((resp)=>resp.json())
+            .then((resp)=>{
+                if(resp.pass){
+                msg.style.color="green"
+                msg.innerHTML= "successfully commited";
                 refresh();
+                }else{
+                    msg.style.color="red"
+                    msg.innerHTML= "couldn't commit try reloading the page";
+                }
             })
-           .catch(()=>{console.log('fail')})
+           .catch(()=>{msg.style.color="orange"
+           msg.innerHTML= "connection error";})
         }
 
 }
