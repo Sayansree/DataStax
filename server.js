@@ -35,7 +35,7 @@ response.sendFile(path.join( __dirname + '/style/auth.css'));
 });
 
 app.get('/logs/script',(request, response)=>{
-  response.sendFile(path.join( __dirname + '/scripts/logs.js'));
+  response.sendFile(path.join( __dirname + '/scripts/index.js'));
 });
 
 app.get('/style',(request, response)=>{
