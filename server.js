@@ -33,11 +33,16 @@ app.get('/auth/script',(request, response)=>{
   response.sendFile(path.join( __dirname + '/scripts/auth.js'));
 });
 
-// app.get('/login/script/main',(request, response)=>{
-//   response.sendFile(path.join( __dirname + '/scripts/loginmain.js'));
-// });
 app.get('/auth/style',(request, response)=>{
 response.sendFile(path.join( __dirname + '/style/auth.css'));
+});
+
+app.get('/logs/script',(request, response)=>{
+  response.sendFile(path.join( __dirname + '/scripts/logs.js'));
+});
+
+app.get('/style',(request, response)=>{
+response.sendFile(path.join( __dirname + '/style/style.css'));
 });
 
 app.get('/auth',(request, response)=>{
