@@ -9,13 +9,14 @@ window.onload = ()=>{
                 method:'post',
                 mode:'cors',
                 credentials: 'same-origin',
-                body : JSON.stringify({'username':uname,'email':email,'password':pass}),
                 headers: {"Content-type": "application/json; charset=UTF-8"},
             }
             ).then((resp)=>{return resp.text();} )
             .then((resp)=>{console.log(resp);
-                msg.innerHTML= resp;})
-           .catch((err)=>{console.log('fail',resp)})
+                msg.innerHTML= resp;
+                refresh();
+            })
+           .catch(()=>{console.log('fail')})
         }
 
 }
