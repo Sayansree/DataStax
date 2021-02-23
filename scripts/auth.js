@@ -30,15 +30,15 @@ window.onload =()=>{
             body : JSON.stringify({'email':email,'password':CryptoJS.SHA512(pass).toString()}),
             headers: {"Content-type": "application/json; charset=UTF-8"},
         }
-        ).then((resp)=>{return resp.json();} )
-        .then((resp)=>{console.log(resp);
+        ).then((resp)=>resp.json())
+        .then((resp)=>{
                 if(resp.pass){
                     msglogin.innerHTML = "login successful";
                     msglogin.style.color = "green";
                     setTimeout(()=>window.open("/","_self"),2000);
                 }else{
                     msglogin.style.color = "red";
-                    msglogin.innerHTML = (resp.email)?"incorrect password":"account not registered with the current email";
+                    msglogin.innerHTML = (resp.email)?"incorrect password":"account not registered with the current email, register your account first ";
                 }
             })
         .catch(()=>{console.log('connection error')})
@@ -49,6 +49,7 @@ window.onload =()=>{
         const pass=document.getElementById("sign-pass").value;
         const uname=document.getElementById("sign-uname").value;       
         msgsignup.innerHTML= "loading...";
+        msgsignup.style.color = "blue";
         var resp = await fetch('/signup',
         {
             method:'post',
@@ -57,7 +58,7 @@ window.onload =()=>{
             body : JSON.stringify({'username':uname,'email':email,'password':CryptoJS.SHA512(pass).toString()}),
             headers: {"Content-type": "application/json; charset=UTF-8"},
         }
-        ).then((resp)=>{return resp.text();} )
+        ).then((resp)=>resp.json())
         .then((resp)=>{console.log(resp);
             msgsignup.innerHTML= resp;})
     .catch((err)=>{console.log('fail',resp)})

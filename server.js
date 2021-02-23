@@ -82,15 +82,19 @@ app.get('/',(request, response)=>{
   });
   app.post('/signup',(request,response)=> { 
     if(Object.keys(request.cookies).length===0){
-      console.log(request.body.email,request.body.email,request.body.password)
-        addUser(request.body.username,request.body.email,request.body.password).then(() =>{
-        response.send("registered");
-        console.log(Date(),`user ${request.body.username}` ,request.ip );
-    }).catch((stat)=>{
+      checkemail(request.body.email).then(()=>{
+        response.send({exists:true});
+        console.log(Date(),`user ${request.body.username} registered` ,request.ip );
+      }).catch(()=>addUser(request.body.username,request.body.email,request.body.password)
+      .then(() =>{
+        response.send({exists:false,status:true});
+        console.log(Date(),`user ${request.body.username} registered` ,request.ip );
+      }).catch((stat)=>{
       response.body=stat
-        response.send("failed");
+        response.send({exists:false,status:false});
         console.log(Date(),'manual login failed',request.ip);
       })
+      )
     }
   });
   app.post('/commit',(request,response)=> { 
@@ -169,6 +173,15 @@ const reset       = async () => { await dropTable(); await createTable();let tod
 const addColumn =   async (col) => await client.execute(`ALTER TABLE ${process.env.table} ADD ${col} INT`).catch((err)=>console.log(`ignoring ${col} column already exists`));
 const addUser   =   async (name,email,password_hash)    => await client.execute(`INSERT INTO ${process.env.table} (name,email,password_hash) VALUES ('${name}','${email}','${password_hash}');`);
 const addcookie =   async (email,cookie_hash) => await client.execute(`UPDATE ${process.env.table} SET cookie_hash = '${cookie_hash}' WHERE EMAIL = '${email}'`)
+const checkemail =   async (email) => {
+  return myPromise = new Promise(async(success, fail) =>{
+    let rs = await client.execute(`SELECT email FROM ${process.env.table} WHERE email = '${email}' ALLOW FILTERING;`);
+    if(rs.rowLength==1){
+      success();
+    }else
+      fail();
+  })
+};
 const checkCookies =   async (cookie_hash) => {
   return myPromise = new Promise(async(success, fail) =>{
     let rs = await client.execute(`SELECT email FROM ${process.env.table} WHERE cookie_hash = '${cookie_hash}' ALLOW FILTERING;`);
