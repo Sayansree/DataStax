@@ -1,6 +1,5 @@
 *.env
 rough.*
-secure/*
 node_modules/*
 node_modules
 test*.*
