@@ -165,6 +165,7 @@ const reset       = async () => { await dropTable(); await createTable();let tod
 //data manupulation
 const addColumn =   async (col) => await client.execute(`ALTER TABLE ${process.env.table} ADD ${col} INT`).catch((err)=>console.log(`ignoring ${col} column already exists`));
 const addUser   =   async (name,email,password_hash)    => await client.execute(`INSERT INTO ${process.env.table} (name,email,password_hash) VALUES ('${name}','${email}','${password_hash}');`);
+const removeUser=   async (cookie_hash)    => await client.execute(`DELETE FROM ${process.env.table} WHERE cookie_hash = '${cookie_hash} IF EXISTS;`);
 const addcookie =   async (email,cookie_hash) => await client.execute(`UPDATE ${process.env.table} SET cookie_hash = '${cookie_hash}' WHERE EMAIL = '${email}'`)
 const checkemail =   async (email) => {
   return myPromise = new Promise(async(success, fail) =>{
