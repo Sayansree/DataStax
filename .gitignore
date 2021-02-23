@@ -3,7 +3,7 @@ rough.*
 secure/*
 node_modules/*
 node_modules
-test2.js
+test*.*
 cqlsh-astra/*
 cqlsh-astra
 package-lock.json
